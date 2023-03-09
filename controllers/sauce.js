@@ -1,30 +1,7 @@
 const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
-exports.createTestSauce = (req, res, next) => {
-/*     const sauceObject = JSON.parse(req.body.sauce); */
-const sauceObject = {
-    name: 'Sriracha',
-    manufacturer: 'Sriracha',
-    description: 'Sriracha',
-    mainPepper: 'Sriracha',
-    heat: 3,
-    userId: '63fff33e10a6cc78b308efe0'
-  };
-    // console.log(sauceObject);
-    /* delete sauceObject._id;
-    delete sauceObject._userId;*/
-    const sauce = new Sauce({
-        ...sauceObject,
-        /*userId: req.auth.userId,*/
-        imageUrl: `http://localhost:3000/images/sauce-de-piment-sriracha-150g.jpg`
-    });
 
-    sauce.save()
-        .then(() => { res.status(201).json({ message: 'Sauce enregistrée !' }) })
-        .catch(error => { res.status(400).json({ error }) }) 
-    
-};
 
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
@@ -49,7 +26,7 @@ exports.modifySauce = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
 
-    delete sauceObject._userId;
+    delete sauceObject._id;
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
             if (sauce.userId != req.auth.userId) {
@@ -85,6 +62,7 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.getOneSauce = (req, res, next) => {
+    // console.log("req.params.id", req.params.id);
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => res.status(200).json(sauce))
         .catch((error) => (404).json({ error }));

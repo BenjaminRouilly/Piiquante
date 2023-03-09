@@ -1,3 +1,4 @@
+/* package dotenv pour charger des variables d'environement senssibles comme les MDP dans .env */
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -22,8 +23,8 @@ app.use((req, res, next) => {
     next();
 });
 
-/* mongoose.connect('mongodb+srv://benjaminrouilly:uLrcmb7xKIRJuGkZ@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority', */
-    /* mongoose.connect('mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority', */
+
+    /* Vérification de l'utilisateur et si ok connexion à la base de données non relationelle mongoDB */
     mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+/* Définition des routes de l'API et accès au fichier de stockage des images */
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
