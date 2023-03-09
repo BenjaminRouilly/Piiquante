@@ -22,8 +22,9 @@ app.use((req, res, next) => {
     next();
 });
 
-mongoose.connect('mongodb+srv://benjaminrouilly:uLrcmb7xKIRJuGkZ@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority',
+/* mongoose.connect('mongodb+srv://benjaminrouilly:uLrcmb7xKIRJuGkZ@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority', */
     /* mongoose.connect('mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority', */
+    mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true

@@ -34,7 +34,7 @@ exports.createSauce = (req, res, next) => {
     console.log("req.auth", req.auth);
     const sauce = new Sauce({
         ...sauceObject,
-        userId: req.auth.userId,
+    /*     userId: req.auth.userId, */
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
 
