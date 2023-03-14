@@ -32,6 +32,15 @@ exports.modifySauce = (req, res, next) => {
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Not authorized' });
             } else {
+            const IsImageUrl = sauceObject.imageUrl;  
+            // Si changement d'image, cherche l'image de l'article et la supprime du dossier /images
+            // Si IsImageUrl est inexistant, alors juste modification du texte, on continue.
+            if (IsImageUrl != undefined) {
+                Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+                    const oldImage = sauce.imageUrl.split('/')[4];
+                    fs.unlink(`images/${oldImage}`, () => {});
+                });
+            }              
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet modifié!' }))
                     .catch(error => res.status(401).json({ error }));
