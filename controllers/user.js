@@ -2,9 +2,12 @@ require('dotenv').config();
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+/* const deepEmailValidator = require('deep-email-validator'); */
 
-
+/* Création nouvel utilisateur */
 exports.signup = (req, res, next) => {
+    const isEmail = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if (req.body.email.match(isEmail)) {
     bcrypt.hash(req.body.password, 10)
         .then((hash) => {
             const user = new User({
@@ -16,8 +19,12 @@ exports.signup = (req, res, next) => {
                 .catch(error => res.status(400).json({ error }));
         })
         .catch(error => res.status(500).json({ error }));
+    } else {
+        res.status(401).json({ message: `Format de l'adresse mail invalide ` });
+      }
 };
 
+/* Connection d'un utilisateur existant */
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
