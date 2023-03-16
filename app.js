@@ -16,6 +16,7 @@ const username = process.env.DB_USER;
 app.use(cors());
 app.use(express.json());
 
+/* Middleware pour ajouter des en-têtes de réponse pour autoriser l'accès à l'API depuis n'importe quelle origine */
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');

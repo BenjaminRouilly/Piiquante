@@ -2,7 +2,7 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 
-
+/* Création d'une nouvelle sauce */
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     console.log(sauceObject);
@@ -20,6 +20,7 @@ exports.createSauce = (req, res, next) => {
         .catch(error => { res.status(400).json({ error }) })
 };
 
+/* Modification d'une sauce existante */
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ? {
         ...JSON.parse(req.body.sauce),
@@ -53,6 +54,7 @@ exports.modifySauce = (req, res, next) => {
         });
 }
 
+/* Suppréssion d'une sauce */
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -72,6 +74,7 @@ exports.deleteSauce = (req, res, next) => {
         });
 };
 
+/* Affichage d'une sauce selectionnée */
 exports.getOneSauce = (req, res, next) => {
     // console.log("req.params.id", req.params.id);
     Sauce.findOne({ _id: req.params.id })
@@ -81,6 +84,7 @@ exports.getOneSauce = (req, res, next) => {
         res.send('plop'+req.params.id); */
 };
 
+/* Affichage de toutes les sauces */
 exports.getAllSauces = (req, res, next) => {
      Sauce.find()
         .then((sauces) => res.status(200).json(sauces))
@@ -88,7 +92,7 @@ exports.getAllSauces = (req, res, next) => {
 /*          res.send('blabla');  */
 };
 
-
+/* Ajout/suppression d'un like/dislike */
 exports.likeDislike = (req, res) => {
     // Récuperer la sauce
     Sauce.findOne({ _id: req.params.id })
