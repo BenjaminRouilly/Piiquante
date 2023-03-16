@@ -37,6 +37,8 @@ exports.modifySauce = (req, res, next) => {
             // Si IsImageUrl est inexistant, alors juste modification du texte, on continue.
             if (IsImageUrl != undefined) {
                 Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+                    /* On stocke l'ancienne image qu'on a identifiée avec le split qui va chercher après le 4eme / de l'adresse
+                    dans une variable oldImage, et on la supprime avec unlink  */
                     const oldImage = sauce.imageUrl.split('/')[4];
                     fs.unlink(`images/${oldImage}`, () => {});
                 });
