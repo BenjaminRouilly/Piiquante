@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const sauceIsValid = require('../middleware/sauceIsValid')
 
 /* Schéma de données des sauces */
 const sauceSchema = mongoose.Schema({

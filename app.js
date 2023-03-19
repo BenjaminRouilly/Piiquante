@@ -5,13 +5,18 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
-
+const rateLimit = require('express-rate-limit')
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 const path = require('path');
 
-const password = process.env.DB_PASSWORD;
-const username = process.env.DB_USER;
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per window (here, per 15 minutes)
+    message: "Trop de tentatives de connexion. Compte bloqué pour 5 minutes",
+    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+    legacyHeaders: false, // Disable the X-RateLimit-* headers
+  })
 
 app.use(cors());
 app.use(express.json());
@@ -24,9 +29,10 @@ app.use((req, res, next) => {
     next();
 });
 
-
-    /* Vérification de l'utilisateur et si ok connexion à la base de données non relationelle mongoDB */
-    mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority`,
+const password = process.env.DB_PASSWORD;
+const username = process.env.DB_USER;
+/* Vérification de l'utilisateur et si ok connexion à la base de données non relationelle mongoDB */
+mongoose.connect(`mongodb+srv://${username}:${password}@cluster0.l4vp93r.mongodb.net/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
