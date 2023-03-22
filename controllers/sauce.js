@@ -11,7 +11,6 @@ exports.createSauce = (req, res, next) => {
     console.log("req.auth", req.auth);
     const sauce = new Sauce({
         ...sauceObject,
-    /*     userId: req.auth.userId, */
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
 
@@ -33,17 +32,17 @@ exports.modifySauce = (req, res, next) => {
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Not authorized' });
             } else {
-            const IsImageUrl = sauceObject.imageUrl;  
-            // Si changement d'image, cherche l'image de l'article et la supprime du dossier /images
-            // Si IsImageUrl est inexistant, alors juste modification du texte, on continue.
-            if (IsImageUrl != undefined) {
-                Sauce.findOne({ _id: req.params.id }).then((sauce) => {
-                    /* On stocke l'ancienne image qu'on a identifiée avec le split qui va chercher après le 4eme / de l'adresse
-                    dans une variable oldImage, et on la supprime avec unlink  */
-                    const oldImage = sauce.imageUrl.split('/')[4];
-                    fs.unlink(`images/${oldImage}`, () => {});
-                });
-            }              
+                const IsImageUrl = sauceObject.imageUrl;
+                // Si changement d'image, cherche l'image de l'article et la supprime du dossier /images
+                // Si IsImageUrl est inexistant, alors juste modification du texte, on continue.
+                if (IsImageUrl != undefined) {
+                    Sauce.findOne({ _id: req.params.id }).then((sauce) => {
+                        /* On stocke l'ancienne image qu'on a identifiée avec le split qui va chercher après le 4eme / de l'adresse
+                        dans une variable oldImage, et on la supprime avec unlink  */
+                        const oldImage = sauce.imageUrl.split('/')[4];
+                        fs.unlink(`images/${oldImage}`, () => { });
+                    });
+                }
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet modifié!' }))
                     .catch(error => res.status(401).json({ error }));
@@ -76,20 +75,16 @@ exports.deleteSauce = (req, res, next) => {
 
 /* Affichage d'une sauce selectionnée */
 exports.getOneSauce = (req, res, next) => {
-    // console.log("req.params.id", req.params.id);
     Sauce.findOne({ _id: req.params.id })
         .then((sauce) => res.status(200).json(sauce))
         .catch((error) => (404).json({ error }));
-    /*     console.log(req.params);
-        res.send('plop'+req.params.id); */
 };
 
 /* Affichage de toutes les sauces */
 exports.getAllSauces = (req, res, next) => {
-     Sauce.find()
+    Sauce.find()
         .then((sauces) => res.status(200).json(sauces))
-        .catch((error) => (400).json({ error })); 
-/*          res.send('blabla');  */
+        .catch((error) => (400).json({ error }));
 };
 
 /* Ajout/suppression d'un like/dislike */

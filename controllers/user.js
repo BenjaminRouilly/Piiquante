@@ -20,7 +20,7 @@ exports.signup = (req, res, next) => {
             .catch(error => res.status(500).json({ error }));
     } else {
         res.status(401).json({ message: `Format de l'adresse mail invalide ` });
-      }
+    }
 };
 
 /* Connection d'un utilisateur existant */

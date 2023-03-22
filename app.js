@@ -1,4 +1,5 @@
-/* package dotenv pour charger des variables d'environement senssibles comme les MDP dans .env */
+/*  package dotenv pour charger des variables d'environement senssibles comme les MDP dans .env 
+    package rate-limit pour éviter les attaques de type bruteforce ou limiter le nombre de requêtes*/
 require('dotenv').config();
 const express = require('express');
 const app = express();
@@ -11,20 +12,25 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per window (here, per 15 minutes)
+    windowMs: 15 * 60 * 1000, // temps en millisecondes d'application de la limite, ici 15 minutes
+    max: 100, // nombre de requêtes autorisées dans l'intervalle de la limite, donc 100 en 15 minutes
     message: "Trop de tentatives de connexion. Compte bloqué pour 5 minutes",
-    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
-    legacyHeaders: false, // Disable the X-RateLimit-* headers
-  })
+    standardHeaders: true, // indique si les en-têtes standard doivent être inclus dans la réponse
+    legacyHeaders: false, // indique si les en-têtes obsolètes doivent être inclus dans la réponse
+})
 
 app.use(cors());
 app.use(express.json());
 
-/* Middleware pour ajouter des en-têtes de réponse pour autoriser l'accès à l'API depuis n'importe quelle origine */
+/* Middleware pour ajouter des en-têtes CORS pour autoriser l'accès à l'API depuis n'importe quelle origine */
 app.use((req, res, next) => {
+    /* Permet à toutes les requêtes d'origine de faire des appels à l'API */
     res.setHeader('Access-Control-Allow-Origin', '*');
+    /*Définit l'en-tête "Access-Control-Allow-Headers" pour permettre à toutes les en-têtes 
+    listées (Origin, X-Requested-With, Content, Accept, Content-Type, Authorization) d'être incluses dans les requêtes*/
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    /* Définit l'en-tête "Access-Control-Allow-Methods" pour permettre aux méthodes HTTP listées (GET, POST, PUT, DELETE, PATCH, OPTIONS)
+     d'être utilisées dans les requêtes. */
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
